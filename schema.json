@@ -1,0 +1,64 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "Max for Live device description",
+ "description": "What a Max for Live device is and what each of its parameters does, for a language model or a controller script. Written by describe.py from the device file.",
+ "type": "object",
+ "required": ["format", "version", "device", "parameters", "push_pages"],
+ "additionalProperties": false,
+ "properties": {
+  "format": {"const": "m4l-device-description"},
+  "version": {"const": "0.1"},
+  "device": {
+   "type": "object",
+   "required": ["name", "kind", "about"],
+   "additionalProperties": false,
+   "properties": {
+    "name": {"type": "string", "description": "The device's file name, without .amxd: the name Live shows."},
+    "kind": {"enum": ["audio_effect", "midi_effect", "instrument", "unknown"]},
+    "about": {"type": ["string", "null"], "description": "The device's own Info text, if its builder wrote one."}
+   }
+  },
+  "parameters": {
+   "type": "array",
+   "description": "Every parameter Live sees, in the patch's order.",
+   "items": {
+    "type": "object",
+    "required": ["name", "short_name", "about", "type", "visibility", "default", "push"],
+    "additionalProperties": false,
+    "properties": {
+     "name": {"type": "string", "description": "The long name: what Live's API, automation and mappings call it."},
+     "short_name": {"type": "string", "description": "What Push and the device show."},
+     "about": {"type": ["string", "null"], "description": "What it does: the Info View text Live shows on hover."},
+     "type": {"enum": ["continuous", "integer", "choice", "other"]},
+     "visibility": {"enum": ["automatable", "stored", "hidden"], "description": "automatable: automation, mapping and Push reach it; stored: saved with the set, not automatable; hidden: neither."},
+     "range": {"type": "array", "items": {"type": "number"}, "minItems": 2, "maxItems": 2, "description": "[min, max], in the parameter's own unit."},
+     "unit": {"type": ["string", "null"], "enum": [null, "ms", "Hz", "dB", "%", "pan", "semitones", "MIDI note", "custom"]},
+     "unit_format": {"type": "string", "description": "With unit custom: Live's format string, e.g. '%0.1f x'."},
+     "curve": {"type": "number", "description": "The knob's exponent: a control's value is min + (max - min) * position ** curve."},
+     "options": {"type": "array", "items": {"type": "string"}, "description": "A choice's options, in order: its value is the index."},
+     "default": {"description": "Where it starts: a number, or a choice's option; null if the device sets none."},
+     "push": {
+      "type": ["object", "null"],
+      "required": ["page", "slot"],
+      "additionalProperties": false,
+      "properties": {"page": {"type": "string"}, "slot": {"type": "integer", "minimum": 1, "maximum": 8}},
+      "description": "Where it sits on Push's pages: null if on none."
+     }
+    }
+   }
+  },
+  "push_pages": {
+   "type": "array",
+   "description": "The pages the device defines for Push, in order; empty if Live makes its own.",
+   "items": {
+    "type": "object",
+    "required": ["name", "parameters"],
+    "additionalProperties": false,
+    "properties": {
+     "name": {"type": "string"},
+     "parameters": {"type": "array", "items": {"type": ["string", "null"]}, "maxItems": 8, "description": "Long names, a slot each; null for an empty slot."}
+    }
+   }
+  }
+ }
+}
