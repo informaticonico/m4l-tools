@@ -1,0 +1,21 @@
+name: Something doesn't work
+description: A device or script misbehaves
+body:
+  - type: input
+    id: what
+    attributes:
+      label: Which device or script, and which version
+      placeholder: "Tannin v1.0.1, or standalone_check.py"
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Live and Push OS versions (if it's in Live or on Push)
+      placeholder: "Live 12.2, Push OS 2.0"
+  - type: textarea
+    id: happened
+    attributes:
+      label: What you did, what you expected, what happened
+    validations:
+      required: true
